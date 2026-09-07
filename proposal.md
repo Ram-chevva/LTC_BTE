@@ -68,18 +68,6 @@ Energy is the zeroth derivative and is free. Forces are the first derivative and
 
 FC3 is not an optional refinement. Without it, vibrational waves in the crystal would never scatter off one another and every material would have infinite thermal conductivity. FC3 is precisely what makes κ_L a finite number, and it is what makes it expensive.
 
-### Preliminary evidence (measured, not cited)
-
-Using `phono3py` 4.4.0 we counted the required force evaluations for a 64-atom silicon supercell, then repeated the count on the identical cell with atoms randomly perturbed by ~0.05 Å so that no symmetry operation is detected. This is a synthetic control in which the only variable is symmetry:
-
-| Configuration | Silicon (Fd-3m) | Identical cell, symmetry removed (P1) |
-|---|---|---|
-| Finite displacement, no pair cutoff | 111 | 18,480 |
-| Finite displacement, 4 Å pair cutoff | 31 | 4,800 |
-| Regression fit (`hiphive`, FC3 cutoff 3.5 Å) | 1 configuration | 48–144 configurations |
-
-Symmetry determines *how many* evaluations are needed; chemistry only determines the price of each one. Symmetry is a property of the material, not a setting anyone chooses.
-
 ### The gap
 
 Two independent remedies exist, developed by separate communities. MLIPs make each force evaluation ~10³× cheaper [1,2]. Regression-based force-constant extraction reduces how many evaluations are needed [4,5]. Neither community measures the other's approach, and neither reports end-to-end cost.
@@ -232,22 +220,6 @@ Grey stages are existing software used unmodified. All our engineering lives in 
 | GPU memory insufficient at large batch sizes | Out-of-memory during the week-5 batching pilot | Test the memory envelope before the full sweep; cap batch size per device | Reduce maximum batch size; report the frontier over the achievable range, preserving the question |
 | Full factorial sweep exceeds allocation | Week-7 pilot projects cost above remaining allocation | Reduce the factorial design; fractional design over less-interesting factors, full resolution on batching and precision | Fewer conditions with more repetitions and correspondingly narrower claims |
 | Cluster software update invalidates earlier timings | Version drift detected via the environment header in each result file | Every result carries an environment header, so a change is detectable rather than silent | Re-run the affected subset; if infeasible, report pre- and post-update results as separate series |
-
----
-
-## Reproducibility Plan
-
-**Recorded for every run.** Each file in `results/raw/` carries a header with: harness git commit hash; SHA-256 of the configuration file; `phono3py`, `phonopy`, `hiphive`, ASE, pymatgen, PyTorch and NumPy versions; CUDA toolkit and driver versions; GPU model and count; CPU model, core count and partition; NequIP-OAM-L checkpoint hash; random seed; exact command line; and timestamp.
-
-**Pinning.** `env/environment.yml` pins every package to an exact version; `env/models.lock` pins the model checkpoint by hash and source URL. External code is cited by release tag or commit hash, never by branch.
-
-**Dataset versioning.** The 103-solid reference set is pulled at a pinned release tag of the k_SRME repository with its checksum recorded. Our own DFT reference structures and forces are committed as text in `data/reference/`; large binaries are excluded from git with checksums recorded instead.
-
-**External reproduction target.** `scripts/reproduce_figure1.sh` regenerates the per-stage timing breakdown for one structure from a fresh clone, given a GPU and the pinned environment. `README.md` documents this as a single command with expected runtime and tolerance. Absolute timings differ across hardware, so the script reports the *relative* per-stage breakdown, which should reproduce within the stated tolerance.
-
-**Analysis.** Every figure has exactly one script in `analysis/` regenerating it from `results/processed/`. No figure is produced by hand or by manual editing. `make figures` regenerates all of them.
-
-**Use of AI assistants.** An LLM-based assistant (Claude) was used during proposal preparation for literature search, for drafting and editing this document, and for running the preliminary `phono3py` and `hiphive` calculations that produced the displacement counts (111, 18,480, 4,800, and the 9,155 free-parameter figure) and the finite-difference precision simulation reported above. Those numbers are outputs of executed code rather than model assertions; the scripts that produced them are committed under `scripts/preliminary/` so any reader can re-run and verify them. We anticipate using an AI coding assistant during implementation and will note materially assisted components in the relevant source file headers and in the final report, consistent with the course academic-integrity policy.
 
 ---
 
