@@ -112,24 +112,6 @@ A practitioner with a fixed allocation therefore cannot answer the operational q
 
 ---
 
-## Related Work
-
-**[1] Póta, Ahlawat, Csányi & Simoncelli, *Thermal Conductivity Predictions with Foundation Atomistic Models* (arXiv:2408.00755).** Contributes the κ_SRME metric and a DFT reference set of 103 solids. *We rely on* those 103 reference κ_L values as our accuracy axis, and their metric definition for comparability. *We differ:* the paper reports accuracy only — no timing, no GPU-hours, no cost comparison. We reuse their ground truth and add the axis they omit.
-
-**[2] Rhodes et al., *Orb-v3: atomistic simulation at scale* (arXiv:2504.06231).** The only published Pareto frontier plotting κ_SRME against model speed, and our closest prior art. *We differ, precisely:* their cost axis is forward passes per second on a fixed 1000-atom system, at batch size 1, on a single H200, with graph-construction time excluded. That is a model microbenchmark. We measure end-to-end cost of producing a κ_L value including graph construction, batching effects, multi-device scaling and the transport solve. This distinction is the core of our contribution.
-
-**[3] Matbench Discovery** (<https://matbench-discovery.materialsproject.org/>). The community leaderboard for foundation interatomic potentials, including κ_SRME. *We rely on* it for model metadata and as the definition of community accuracy practice. *We differ:* its ranked columns are CPS, Accuracy, F1, DAF, Precision, MAE, R², κ_SRME and RMSD — no cost column of any kind. We treat that absence as the motivating fact and produce the missing axis.
-
-**[4] Eriksson, Fransson & Erhart, *hiphive* (arXiv:1811.09267).** The regression route to force constants: fitting from randomly displaced supercells rather than enumerating symmetry-distinct displacements. *We rely on* `hiphive` as our regression implementation, and used its cluster-space machinery to produce the 9,155 free-parameter figure behind the table above. *We differ:* they establish that fewer configurations suffice but do not quantify the end-to-end saving, do not evaluate the method with neural-network forces, and do not characterise the accuracy penalty against compute spent.
-
-**[5] Zhou, Nielson, Xia & Ozoliņš, *Compressive Sensing Lattice Dynamics* (PRL 113, 185501).** The sparse-regression formulation, and the demonstration that the force-constant tensor is sparse enough for compressed sensing. *We rely on* this to justify treating the fitting backend (OLS, LASSO, RFE) as a swept factor rather than fixing plain OLS. *We differ:* as with [4], the cost side is asserted qualitatively, never measured.
-
-**[6] *Multi-GPU Molecular Dynamics with Deep Potentials in GROMACS* (arXiv:2604.07276).** The strongest existing systems work on serving MLIPs at scale: domain decomposition, scaling to 32 GPUs, over 90% of wall time in inference. *We rely on* their scaling methodology and reporting conventions. *We differ:* their workload is molecular dynamics — one system advanced through sequentially dependent steps, latency-bound, structurally batch-size-1, with neighbour lists reused across steps. Ours is thousands of mutually independent structures each evaluated once: throughput-bound, freely batchable, unable to amortize graph construction. Their optimizations target a regime ours is not in, which is why batching, bucketing and precision are levers for us and not for them.
-
-**[7] Deng et al., *Systematic softening in universal MLIPs* (npj Comput. Mater. 2024).** Identifies the mechanism behind MLIP error on vibrational properties: pretraining sets are relaxation trajectories near energy minima, producing a too-smooth potential energy surface and underpredicted phonon frequencies in over 90% of materials tested. *We rely on* this to justify treating the accuracy axis as a **control** rather than a novel result — the accuracy question is settled, and we reuse the community's answer.
-
----
-
 ## Proposed System or Approach
 
 ```mermaid
