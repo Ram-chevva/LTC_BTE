@@ -140,39 +140,6 @@ Grey stages are existing software used unmodified. All our engineering lives in 
 
 ---
 
-## Evaluation Plan
-
-**RQ-to-experiment mapping**
-
-| RQ | Experiment | Primary metric | Baseline |
-|---|---|---|---|
-| RQ1 | Instrument every stage; run full workflow at fixed settings | Wall-clock fraction per stage (%) | Uninstrumented total (confirms overhead < 3%) |
-| RQ2 | Sweep batch size × strategy × GPU count on a mixed-size queue | Throughput (structures·s⁻¹) | Naive padding, batch 1, single GPU |
-| RQ3 | Full 2×2 over force source × extraction method, swept over cost knobs | κ_L error (%) vs node-hours | DFT + finite displacement at converged settings |
-| RQ4 | Repeat force evaluation at fp64 / fp32 / tf32 | \|Δκ_L\| (%), speedup (×) | fp64 |
-
-**Datasets and workloads.** *Accuracy:* the 103-solid DFT reference set from [1], public and versioned (N = 103). *Cost and timing:* 3–5 structures we run DFT on ourselves, spanning symmetry classes, producing measured per-SCF cost on our hardware. *Throughput (RQ2):* a synthetic screening queue of ≥200 supercells spanning ~32–250 atoms. Note that within a single material all displaced supercells share an atom count; size heterogeneity is a property of the *queue*, which is why RQ2 is posed at screening level.
-
-**Baselines and ablations.** Baselines: (a) DFT + finite displacement at converged settings, the accuracy gold standard; (b) MLIP at batch size 1, fp64, single GPU, naive padding — the configuration published speed figures implicitly assume. Ablations remove, one at a time: size-aware bucketing, multi-GPU, regression, reduced precision.
-
-**Varied factors.** Force source (DFT, NequIP-OAM-L) · extraction method (finite displacement, regression) · fitting backend (OLS, LASSO, RFE) · batch size (1, 4, 16, 64, 256) · batching strategy (naive, size-bucketed) · precision (fp64, fp32, tf32) · GPUs (1–3 × RTX-3090, 1 × A100) · FC3 supercell (2×2×2, 3×3×3) · pair cutoff (none, 4 Å, 5 Å) · q-mesh (11³, 15³, 21³) · symmetry class (high-symmetry, P1).
-
-**Controlled factors.** Displacement amplitude 0.03 Å · `primitive_matrix='P'` (removes a known nondeterminism source) · two-channel transport `transport_type="smm19"` so κ_L = κ_P + κ_C on both sides of every comparison · identical structure set · pinned environment · same node type within any timing comparison · exclusive node allocation for all timed runs.
-
-**Metrics, with units.** *System:* end-to-end wall-clock per material (s) · throughput (structures·s⁻¹) · compute consumed (GPU-hours, node-hours) · energy (kWh, via RAPL and NVML) · inference latency p50/p95 (ms) · peak GPU memory (GB) · padding waste (% of computed atom-slots) · multi-GPU scaling efficiency (% of ideal). *Quality:* relative κ_L error vs DFT reference (%) · κ_SRME (dimensionless, comparable to [1] and [3]) · directional error per tensor diagonal component (%) · top-N screening agreement (%).
-
-**Environment.** 3 × NVIDIA RTX-3090 (24 GB) locally; A100 and H200 partitions on the university clusters. CPU DFT on standard compute partitions with exclusive allocation. Full stack pinned in `env/environment.yml`; CUDA, driver and PyTorch versions recorded in every result header.
-
-**Trials and variability.** Every timing configuration runs **three times** with one preceding warm-up discarded (first-run cost includes library import, CUDA context creation, weight transfer and cold caches). Reported as **median with interquartile range**, never a single value or a mean of three; IQR becomes the error bar on every throughput and latency figure. Seeds fixed and recorded for rattled-structure generation. All timed runs use exclusive node allocation.
-
-**Planned figures and tables.** (1) Stacked bar of per-stage wall-clock fraction — tests H1. (2) Throughput vs batch size by strategy, with padding waste on a secondary axis — tests H2. (3) Multi-GPU scaling efficiency vs device count against ideal linear. (4) **Central figure:** κ_L error vs node-hours per material, one series per 2×2 cell, stratified by symmetry class — tests H3. (5) \|Δκ_L\| vs measured speedup for fp64/fp32/tf32 — tests H4. (Table 1) Configuration counts by symmetry class and extraction method. (Table 2) Ablation effects on throughput and frontier position.
-
-**Success criteria.** RQ1: a complete per-stage decomposition summing to measured total within 3%, whatever it shows. RQ2: size-aware batching is useful only if it improves throughput by **≥1.5×** at batch 64 at identical κ_L (within 0.1%) without increasing peak GPU memory by more than 10%. RQ3: the regression path is preferable only if it reaches within **10%** relative κ_L error of finite displacement at **≥10×** lower total node-hours. RQ4: a precision setting is acceptable only if \|Δκ_L\| ≤ **1%** relative to fp64.
-
-**Negative results.** Each hypothesis has an informative negation and we commit in advance to reporting it. If graph construction is not a large share (H1 false), the excluded-cost critique of [2] weakens but the first end-to-end cost decomposition stands, and the finding that inference genuinely dominates would justify the community's convention. If batching yields under 1.5× (H2 false), that is a useful result about how much heterogeneity real queues contain. If the savings do compose (H3 false), that is stronger and more actionable than our prediction. If tf32 proves safe (H4 false), that is an immediately usable speedup. A result fails only if it is unmeasurable, not if it is unexpected.
-
----
-
 ## Expected Deliverables
 
 | Artifact | Path | Description |
