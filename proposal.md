@@ -24,7 +24,7 @@ Neither systems role requires materials science background: the harness receives
 
 ## Feedback Received and Responses
 
-**Feedback (idea presentation, Aug 28).** The instructor asked what "MLIP" means.
+**Feedback (idea presentation, Aug 28).** The professor asked what "MLIP" means.
 
 **Response given.** MLIPs are neural networks trained on thousands of crystal structures, from which they learn the physics and chemistry of how atoms interact.
 
@@ -130,11 +130,6 @@ Grey stages are existing software used unmodified. All our engineering lives in 
 | Transport solver | FC2, FC3, q-mesh | κ_L (W·m⁻¹·K⁻¹) | `phono3py` (reused) |
 | **Cost model** | All logged runs | Predicted node-hours for a material and settings | **Ours** |
 
-**Reused dependencies:** `phono3py` 4.4.0, `phonopy` 4.4.0, `hiphive` (pinned release), NequIP-OAM-L pretrained weights (checkpoint hash pinned in `env/models.lock`), `scikit-learn`, ASE, pymatgen, VASP. All pinned by version or commit hash in `env/environment.yml`.
-
-**What we replicate:** the κ_SRME accuracy evaluation of a foundation MLIP against the 103-solid reference set of [1], and the regression extraction procedure of [4]. Replication succeeds if our κ_SRME for NequIP-OAM-L falls within the published spread for MPtrj-class models, confirming correct pipeline configuration.
-
-**The extension, stated separately:** the cost axis. None of [1]–[4] reports end-to-end wall-clock or compute for producing a κ_L value. Our extension is the per-stage cost decomposition (RQ1), the batching and multi-device optimization of stage C (RQ2), the joint accuracy-cost frontier across the four combinations (RQ3), and the precision study (RQ4).
 
 **Out of scope:** no new model architecture; no training or fine-tuning; no new DFT campaigns beyond the 3–5 structures needed for timing and reference; metals and the electronic contribution to conductivity excluded (we study κ_L = κ_P + κ_C for non-metals).
 
