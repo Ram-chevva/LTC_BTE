@@ -8,7 +8,7 @@
 
 | Member | Program | Role | Primary ownership |
 |---|---|---|---|
-| Ramm Chevva | PhD, CSE | Project lead, domain and integration | Reference dataset, structure selection, correctness of the physics, accuracy axis (RQ3), final integration |
+| Ramm Chevva | PhD, CS | Project lead, domain and integration | Reference dataset, structure selection, correctness of the physics, accuracy axis (RQ3), final integration |
 | Thrinadh Nimmagadda | MS, CS | Systems and throughput | Per-stage profiler, size-aware batching, multi-GPU sharding (RQ1, RQ2) |
 | Divyashanu Swain | MS, CS | Evaluation and reproducibility | Sweep driver, precision harness, statistics, all figures, reproducibility plan (RQ4) |
 
