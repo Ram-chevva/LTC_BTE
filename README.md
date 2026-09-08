@@ -7,28 +7,29 @@ CSCE 585 · Machine Learning Systems · Fall 2026 · University of South Carolin
 A benchmark study comparing two independent ways to reduce the cost of computing lattice thermal conductivity (κ_L): replacing DFT force evaluations with a machine-learned interatomic potential (MLIP), and reducing the number of evaluations required through regression-based force-constant extraction. We measure wall-clock time, compute consumed, and κ_L accuracy across all four combinations, on a common axis nobody has yet reported.
 The full write-up is in proposal.md.
 ## Team
-Ramm Chevva (PhD, CSE) — project lead, DFT references, integration
-Thrinadh Nimmagadda (MS, CS) — systems and throughput
-Divyashanu Swain (MS, CS) — evaluation and reproducibility
+Ramm Chevva (PhD, CSE) - project lead, DFT references, integration  
+Thrinadh Nimmagadda (MS, CS) - systems and throughput  
+Divyashanu Swain (MS, CS) - evaluation and reproducibility  
 ## Status
-Proposal	Submitted Sep 4, 2026
-Environment	Not yet pinned
-Baseline pipeline	Not yet running
-Final report	Due week 15
-Progress is tracked in GitHub Issues, one per research question.
+Proposal	Submitted Sep 4, 2026  
+Environment	Not yet pinned  
+Baseline pipeline	Not yet running  
+Final report	Due week 15  
+Progress is tracked in GitHub Issues, one per research question.  
+
 ## Repository layout
-Planned structure. Directories appear as work begins.
-proposal.md — written project proposal
-env/ — pinned conda environment and model checkpoints
-harness/ — benchmark code: profiler, batching, sharding, precision
-configs/ — one YAML per swept configuration
-scripts/ — sweep drivers, SLURM templates, reproduction scripts
-results/raw/ — one JSON per run with environment header
-results/processed/ — aggregated CSVs behind every figure
-analysis/ — one script per figure
-figures/ — figures and tables (PDF and PNG)
-docs/ — plain-language project primer
-report/ — final report and presentation
+Planned structure. Directories appear as work begins.  
+proposal.md — written project proposal  
+env/ — pinned conda environment and model checkpoints  
+harness/ — benchmark code: profiler, batching, sharding, precision  
+configs/ — one YAML per swept configuration  
+scripts/ — sweep drivers, SLURM templates, reproduction scripts  
+results/raw/ — one JSON per run with environment header  
+results/processed/ — aggregated CSVs behind every figure  
+analysis/ — one script per figure  
+figures/ — figures and tables (PDF and PNG)  
+docs/ — plain-language project primer  
+report/ — final report and presentation  
 ## Reproducing a result
 Once the harness is available, one principal result will regenerate from a fresh clone with bash scripts/reproduce_figure1.sh. The script reports the relative per-stage timing breakdown; absolute timings differ across hardware. Expected runtime and tolerance are documented alongside the script.
 ## Dependencies
