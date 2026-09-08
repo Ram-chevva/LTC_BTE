@@ -1,6 +1,8 @@
 # LTC_BTE
 End-to-end cost of lattice thermal conductivity prediction: machine-learned potentials versus DFT.
+
 CSCE 585 · Machine Learning Systems · Fall 2026 · University of South Carolina
+
 ## What this is
 A benchmark study comparing two independent ways to reduce the cost of computing lattice thermal conductivity (κ_L): replacing DFT force evaluations with a machine-learned interatomic potential (MLIP), and reducing the number of evaluations required through regression-based force-constant extraction. We measure wall-clock time, compute consumed, and κ_L accuracy across all four combinations, on a common axis nobody has yet reported.
 The full write-up is in proposal.md.
@@ -33,5 +35,3 @@ Once the harness is available, one principal result will regenerate from a fresh
 Pinned in env/environment.yml. Key packages: phono3py 4.4.0, phonopy 4.4.0, hiphive, NequIP-OAM-L (pretrained, checkpoint hash pinned in env/models.lock), ASE, pymatgen, VASP. External code is referenced by release tag or commit hash, never by branch.
 ## Use of AI assistants
 An LLM assistant (Claude) was used during proposal preparation for literature search, drafting, and running preliminary calculations. See the Reproducibility Plan in proposal.md for details. Materially AI-assisted components will be noted in source file headers during implementation, consistent with the course academic-integrity policy.
-## License
-MIT. See LICENSE.
